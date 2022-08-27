@@ -5,16 +5,24 @@ import { useState, useEffect } from 'react';
 function App() {
 
   let [result, setResult] = useState(0);
-  let [data, setData] = useState('...loading');
+  let [data, setData] = useState(<tr><td colSpan ="3" >...loading</td></tr>);
 
   async function getUserData(){
 
     try{
       const userData = await fetch('https://jsonplaceholder.typicode.com/users/');
       if (userData.status === 200){
-        // console.log(await userData.json());
         let response = await userData.json();
-        setData(response);
+        let items = response.map((item)=> {
+          return (
+          <tr key={item.id}>
+            <td>{item.name}</td>
+            <td>{item.email}</td>
+            <td>{item.phone}</td>
+            </tr>)
+
+        });
+        setData(items);
       } 
       else {
         throw "Error fetching data";
@@ -24,8 +32,6 @@ function App() {
     }
   }
 
-  // getUserData();
-  
 
   function add(){
       result++;
@@ -44,8 +50,8 @@ function App() {
       <span> {result} </span>
       <button onClick={subtract}>Remove</button>
       <br/>
-      {data}<br/>
-      <table>
+      <br/>
+      <table border="1">
         <thead>
           <tr>
             <th>Name</th>
@@ -59,6 +65,7 @@ function App() {
             <td>jax@gmail.com</td>
             <td>1327998765</td>
           </tr>
+          {data}
         </tbody>
       </table>
 
