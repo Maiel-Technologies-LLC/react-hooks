@@ -10,16 +10,19 @@ function App() {
   let [data, setData] = useState(<tr><td colSpan ="3" >...loading</td></tr>);
   let [posts, setPosts] = useState(<tr><td colSpan ="4" >...loading</td></tr>);
 
+  let [liveText, setLiveText] = useState("");
+
   
   async function getUserData(){
 
     try{
-      // const userData = await fetch('https://jsonplaceholder.typicode.com/users/');
+      
       const userData = await axios.get('/users');
       console.log(userData);
+
       if (userData.status === 200){
+
         let response = userData.data;
-        // let response = await userData.json();
         let items = response.map((item)=> {
           return (
           <tr key={item.id}>
@@ -82,9 +85,27 @@ function App() {
     setResult(result);
     
   }
-  useEffect(function(){getUserData(); getPostData();}, []);
+
+  useEffect(function(){
+    getUserData(); 
+    getPostData();
+  }, 
+    []);
+
+    function handleKeyUp(event){
+      setLiveText(event.target.value);
+    }
   return (
     <div>
+
+      <input type="text" name="text-field" placeholder='some text...'
+      onBlur={(event) => { console.log('blur')}}
+      onFocus={(event) => {console.log('focus')}}
+      onKeyUp={(event) => {handleKeyUp(event)}}
+      /> <br/><br/>
+      
+      <h1>{liveText}</h1>
+      
       <button onClick={add}>Add</button>
       <span> {result} </span>
       <button onClick={subtract}>Remove</button>
