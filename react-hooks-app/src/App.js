@@ -1,5 +1,5 @@
 import './App.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from './apis/axios';
 
 
@@ -95,10 +95,21 @@ function App() {
     function handleKeyUp(event){
       setLiveText(event.target.value);
     }
+
+    const inputRef = useRef();
+
   return (
     <div>
 
-      <input type="text" name="text-field" placeholder='some text...'
+      <button
+      onClick={
+        (event) => {
+          inputRef.current.focus();
+        }
+      }
+      >Click Me!</button>
+
+      <input ref={inputRef} type="text" name="text-field" placeholder='some text...'
       onBlur={(event) => { console.log('blur')}}
       onFocus={(event) => {console.log('focus')}}
       onKeyUp={(event) => {handleKeyUp(event)}}
