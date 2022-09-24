@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 function App() {
 
   let [result, setResult] = useState(0);
+
   let [data, setData] = useState(<tr><td colSpan ="3" >...loading</td></tr>);
 
   async function getUserData(){
@@ -13,16 +14,20 @@ function App() {
       const userData = await fetch('https://jsonplaceholder.typicode.com/users/');
       if (userData.status === 200){
         let response = await userData.json();
+
         let items = response.map((item)=> {
           return (
           <tr key={item.id}>
             <td>{item.name}</td>
             <td>{item.email}</td>
             <td>{item.phone}</td>
-            </tr>)
+          </tr>)
 
         });
+
+        
         setData(items);
+
       } 
       else {
         throw "Error fetching data";
@@ -43,12 +48,17 @@ function App() {
     setResult(result);
     
   }
-  useEffect(function(){getUserData()}, []);
+  
+  useEffect(function(){
+    getUserData();
+  }, []);
+  
   return (
     <div>
       <button onClick={add}>Add</button>
       <span> {result} </span>
       <button onClick={subtract}>Remove</button>
+      {/* <button onClick={getUserData}>Load</button> */}
       <br/>
       <br/>
       <table border="1">
