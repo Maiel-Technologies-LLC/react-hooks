@@ -1,5 +1,6 @@
 import './App.css';
 import { useState, useEffect } from 'react';
+import axios from './apis/axios';
 
 
 function App() {
@@ -7,14 +8,18 @@ function App() {
   let [result, setResult] = useState(0);
 
   let [data, setData] = useState(<tr><td colSpan ="3" >...loading</td></tr>);
+  let [posts, setPosts] = useState(<tr><td colSpan ="4" >...loading</td></tr>);
 
+  
   async function getUserData(){
 
     try{
-      const userData = await fetch('https://jsonplaceholder.typicode.com/users/');
+      // const userData = await fetch('https://jsonplaceholder.typicode.com/users/');
+      const userData = await axios.get('/users');
+      console.log(userData);
       if (userData.status === 200){
-        let response = await userData.json();
-
+        let response = userData.data;
+        // let response = await userData.json();
         let items = response.map((item)=> {
           return (
           <tr key={item.id}>
@@ -38,6 +43,35 @@ function App() {
   }
 
 
+  async function getPostData(){
+
+    try{
+      // const userData = await fetch('https://jsonplaceholder.typicode.com/users/');
+      const postData = await axios.get('/posts');
+      console.log(postData);
+      if (postData.status === 200){
+        let response = postData.data;
+        // let response = await userData.json();
+        let items = response.map((item)=> {
+          return (
+          <tr key={item.id}>
+            <td>{item.userId}</td>
+            <td>{item.id}</td>
+            <td>{item.title}</td>
+            <td>{item.body}</td>
+            </tr>)
+
+        });
+        setPosts(items);
+      } 
+      else {
+        throw "Error fetching data";
+      }
+    } catch(error){
+      console.error(error);
+    }
+  }
+
   function add(){
       result++;
       setResult(result);
@@ -48,11 +82,7 @@ function App() {
     setResult(result);
     
   }
-  
-  useEffect(function(){
-    getUserData();
-  }, []);
-  
+  useEffect(function(){getUserData(); getPostData();}, []);
   return (
     <div>
       <button onClick={add}>Add</button>
@@ -78,6 +108,27 @@ function App() {
           {data}
         </tbody>
       </table>
+
+
+ <br/>
+ <br/>
+ <br/>
+
+
+ <table border="1">
+        <thead>
+          <tr>
+            <th>User Id</th>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Body</th>
+          </tr>
+        </thead>
+        <tbody>
+          {posts}
+        </tbody>
+      </table>
+
 
     </div>
   )
